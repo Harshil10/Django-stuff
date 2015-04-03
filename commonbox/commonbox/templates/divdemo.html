@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<!-- http://stackoverflow.com/questions/22855271/how-to-create-proportional-stacked-column-chart-in-an-easy-way-in-google-chart -->
+    <head>
+		 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		 <script type="text/javascript">google.load('visualization', '1.0', {'packages':['corechart', 'table']});</script>
+    <script type="text/javascript">
+
+
+	function loadFacebok() {
+		
+			var e = document.getElementById("product");
+			var strProduct = e.options[e.selectedIndex].value;
+			//alert('{{ djangodict|safe }}');
+           $.ajax({
+			url: 'search_result',
+			type: 'GET',
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			data: { 'product': strProduct},
+			success: function(data){
+            //alert("Hi I am former "+ data);
+			//$( "#load_div" ).html( "Hi I am former "+ data );
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback();
+			var data = new google.visualization.DataTable(data)
+			var view  = new google.visualization.DataView(data);
+			
+			var columns = [0];
+			for (var i = 1; i < data.getNumberOfColumns(); i++) {
+			columns.push({
+				type: 'number',
+				label: data.getColumnLabel(i),
+				calc: (function (col) {
+					return function (data, row) {
+						var val = data.getValue(row, col);
+						var total = 0;
+						for (var j = 1; j < data.getNumberOfColumns(); j++) {
+							total += data.getValue(row, j);
+						}
+						return (total == 0) ? null : {v: val, f:((val / total)*100).toFixed(2).toString() + '% ' + '('+val.toString()+')'};
+						};
+					})(i)
+				});
+			};
+			var options = {
+				title: 'Company Performance',
+				colors: ['red', 'blue', 'green'],
+				vAxis: {title: 'Year',  titleTextStyle: {color: 'red'}},
+				isStacked: true,
+				//annotations.alwaysOutside: true,
+				focusTarget: 'category',
+				//is3D: true,
+				//pieHole: 0.4,
+			};
+
+			var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+			$("button").click(function(){
+				var table = new google.visualization.Table(document.getElementById('chart_div10'));	
+				table.draw(data, null)				
+				});
+				
+			view.setColumns(columns);
+			
+			chart.draw(view, options);
+			
+			}
+			
+			});
+		}
+	  
+ /*     function drawChart() {
+		//alert('{{ djangodict|safe }}');
+        var data = new google.visualization.DataTable({{ djangodict|safe }})
+
+        var options = {
+          title: 'Company Performance',
+          vAxis: {title: 'Year',  titleTextStyle: {color: 'red'}},
+		  //is3D: true,
+		  //pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+  }   */
+    </script>
+  </head>
+  <body>
+  	<select id="product" name="product" onChange="loadFacebok()">
+		<option value="NONE">Select Product...</option>
+		<option disabled>-------------------------------</option>
+		<option value="VUL">Vulnerability Scanner</option>
+	</select>
+    <div id="chart_div" style="widatah: 900px; height: 500px;"></div>
+	<button id="show_report">Show Table</button>
+    <div id="chart_div10" style="widatah: 900px; height: 500px;"></div>	
+  </body>
+
+</html>

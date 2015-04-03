@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+	{% load staticfiles %}
+	<script type="text/javascript">
+	
+	function selectFoods() {
+
+		var arr;
+		var arrDesc;
+		var arrDate;
+		var arrDateDesc
+		var option, optionDate;
+		var chartSelect = document.getElementById("charttype");
+		var timeSelect = document.getElementById("timeduration");
+		var d1 = document.getElementById("product");
+		var d2 = d1.options[d1.selectedIndex].value;
+		
+		arrDate = new Array('Till Nov 2014');
+		arrDateDesc = new Array('2014-10-01');
+	
+		switch (d2)
+		{	
+			case "NONE":
+			chartSelect.disabled = true;
+			timeSelect.disabled = true;
+			break;
+			
+			case "VUL":
+			arr = new Array("Active Notes VS Live Notes");
+			arrDesc = new Array("UserbaseComparision");
+			chartSelect.disabled = false;
+			timeSelect.disabled = false;
+			for (var i=0;i<arr.length;i++) {
+				option = new Option(arr[i],arrDesc[i]);
+				optionDate = new Option(arrDate[i],arrDateDesc[i]);
+				chartSelect.options[i] = option;
+				timeSelect.options[i] = optionDate;
+				}
+			break;
+
+			case "SHREDDER":
+			arr = new Array("----","----");
+			chartSelect.disabled = false;
+			timeSelect.disabled = false;
+			for (var i=0;i<arr.length;i++) {
+				option = new Option(arr[i],arr[i]);
+				chartSelect.options[i] = option;
+				}
+			break;
+		
+		}
+	}
+</script>
+	<title>McAfee Dashboard Portal</title>
+
+	<link rel="stylesheet" href="{% static "style.css" %}">
+	
+	 <script type="text/javascript" src="static/jquery-2.1.1.js"></script>
+	 <script type="text/javascript" src="static/Highcharts-4.0.4/js/highcharts.js"></script>
+	 
+	  {% load chartit %}
+	
+	</head>
+    <body>
+	<table style="width:100%">
+	<tr>
+		<td>
+	
+		<form class="form-wrapper cf" name="myform" action="search_result" method="get">
+		
+		<center><img src="{% static "mcafee.jpg" %}" alt="My image"/></center>
+		<!--
+			<input type="text" placeholder="Search Book..." required name="q" value="{{ search_query }}">
+			<button type="submit">Search</button>
+		-->
+			</br></br>
+			<div align="center">
+			<select id="product" name="product" onchange="selectFoods()">
+				<option value="NONE">Select Product...</option>
+				<option value="VUL">Vulnerability Scanner</option>
+				<option value="SHREDDER">Shredder</option>
+				<option value="QuickClean">Quick Clean</option>
+			</select>
+			
+			</br></br></br>
+			
+			<select id="charttype" name="charttype" disabled="true"></select>
+			
+			</br></br></br>
+			
+			<select id="timeduration" name="timeduration" disabled="true"></select>
+			
+						
+			</br></br></br>
+			
+			<button type="submit">Show Report</button>
+
+			</div>
+		</form>
+
+		</td>
+		<center><td width="50%" valign="top"></center>
+			{% if showchart and piechart%}
+				{{ charts|load_charts:"container,container10" }}
+				<div id="container"></div>
+				<td width="50%" valign="top">
+				<div id="container10"></div>
+				</td>
+			{% else %}
+				<h3>Please select appropriate choices. Report will be shown here below</h3>
+			{% endif %}
+		</td>
+	</tr>
+
+	</body>
+</html>
+	
