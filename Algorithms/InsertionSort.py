@@ -8,7 +8,11 @@ from Decorators.input_user import decorate_input
 '''
 Insertions Sort Algorithm Implementation
 '''
-@decorate_input
+#@decorate_input
+#def anagram_problem():
+    
+
+@decorate_input('list')
 def insertion_sort(ARR):
     for i in xrange(1, len(ARR)):
         #print ARR[i]
