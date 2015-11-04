@@ -18,7 +18,7 @@
 {% endblock %}
 
 	{% block form %}
-	<form id='register_new' action='/register_user/' method='post'> {% csrf_token %}
+	<form id='register_new' action='/register/' method='post'> {% csrf_token %}
 
 		<div id='container'>
 			<p> First Name: </p> <input type='text' name='firstname' />

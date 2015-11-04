@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 import json
 
-
+''' Custom authentication method, using custom model '''
 
 def authenticate(email_addr, password):
 	from poll_survey.models import UserProfile
@@ -33,21 +33,14 @@ def get_user(user_id):
 def landing(request):
 	return render(request, 'partials/header.html')
 
-def register_user_new(request):
-	if request.method == 'GET':
-		print 'inside'
-		return render(request, 'register.html')
-
-def login_form(request):
-	if request.method == 'GET':
-		print request.session.get_expiry_age()
-		return render(request, 'login.html')
+''' user login view, based on valid email and password.
+kept csrf decorator for double sure '''
 
 @csrf_protect
-def login_process(request):
-	print 'in login process'
-	if request.method == 'POST':
-		print 'inside post'
+def user_login(request):
+	if request.method == 'GET':
+		return render(request, 'login.html')
+	elif request.method == 'POST':
 		try:
 			email_addr = request.POST.get('email')
 			password = request.POST.get('password')
@@ -63,9 +56,10 @@ def login_process(request):
 			else:
 				return render(request, 'login.html')
 
-
 		except Exception as ex:
 			return None
+
+''' method to retrun message to be shown in template '''
 
 def return_message(request, flag=False):
 	if flag:
@@ -73,13 +67,19 @@ def return_message(request, flag=False):
 		return
 	messages.error(request, 'Oops !, This email is already registered !')
 
+''' register new user, validation is there to check proper email, double sures 
+with client JS 
+'''
+
 @csrf_protect
-def register_user(request):
-	if request.method == 'POST':
+def user_register(request):
+	if request.method == 'GET':
+		return render(request, 'register.html')
+	elif request.method == 'POST':
 		try:
 			email_addr = request.POST.get('email')
-			firstname = request.POST.get('firstname', '')
-			lastname = request.POST.get('lastname', '')
+			firstname = request.POST.get('firstname')
+			lastname = request.POST.get('lastname')
 			username = request.POST.get('username')
 			password = request.POST.get('password')
 			#print email_addr, firstname, username, password
@@ -88,10 +88,15 @@ def register_user(request):
 		AUTH_MODEL = get_user_model()
 		user = AUTH_MODEL.objects.create_user(email_addr, username, firstname=firstname,\
 			lastname=lastname, password=password)
-		if user != None:
+
+		if isinstance(user, tuple):
+			error_message = user[1]
+			messages.error(request, error_message)
+			return redirect('/register/')
+
+		elif user != None:
 			return_message(request, flag=True)
 			return redirect('/login/')
-		print 'reacheddddd'
+
 		return_message(request)
 		return render(request, 'register.html')
-

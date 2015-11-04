@@ -5,11 +5,13 @@ from django.contrib.auth.models import (BaseUserManager,\
 	AbstractBaseUser)
 from django.db import IntegrityError
 
+''' our custom Manager for our custom user auth model UserProfile '''
+
 class UserProfileManager(BaseUserManager):
 	def create_user(self, email_addr, username, firstname=None,\
 	 lastname=None, password=None):
-		if not email_addr:
-			return "User must have an valid email address !"
+		if not email_addr or email_addr == '':
+			return (None, 'Empty or invalid Email')
 		user = self.model(email_addr=self.normalize_email(email_addr), username=username,\
 			firstname=firstname, lastname=lastname)
 
@@ -25,11 +27,10 @@ class UserProfileManager(BaseUserManager):
 		user_admin = self.create_user(email_addr=email_addr, username=username, \
 			firstname=firstname, lastname=lastname)
 		user_admin.is_admin = True
-		print 'hereeeeeee'
 		user_admin.save(using=self._db)
 		return user_admin
 
-
+''' custom authentication model instead of User '''
 
 class UserProfile(AbstractBaseUser):
 	email_addr = models.EmailField(max_length=50, unique=True)
@@ -62,11 +63,3 @@ class UserProfile(AbstractBaseUser):
 
 	def has_module_perms(self, app_label):
 		return True
-
-
-
-
-
-
-
-

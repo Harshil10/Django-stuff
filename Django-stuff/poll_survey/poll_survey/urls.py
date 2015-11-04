@@ -9,8 +9,6 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', login_register_views.landing, name='Landing view'),
-    url(r'^register/$', login_register_views.register_user_new, name='Register view'),
-    url(r'^register_user/$', login_register_views.register_user, name='Register process'),
-    url(r'^login/$', login_register_views.login_form, name='Login view'),
-    url(r'^login_process/$', login_register_views.login_process, name='Login process')
+    url(r'^register/$', login_register_views.user_register, name='Register process'),
+    url(r'^login/$', login_register_views.user_login, name='Login view'),
 )
