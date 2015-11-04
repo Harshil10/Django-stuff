@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+	{% block Information %}
+		<div id='info'>
+			<p><h4>
+				This is the site to survey for polls of elections. You cane Login here to participate in it. Thanks !
+			</h4></p>
+		</div>
+	{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+	{% endblock %}
+
+
+
+{% block form %} 
+	<form id='login' action='/login_process/' method='post'> {% csrf_token %}
+
+		<div id='container'>
+
+			<p> Email: </p> <input type='text' name='email' />
+			<p> Password: </p> <input type='text' name='password' />
+
+			<button>LogIn</button>
+		</div>
+
+	</form>
+
+
+{% endblock %}
