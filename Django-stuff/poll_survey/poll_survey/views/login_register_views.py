@@ -1,11 +1,15 @@
 from django.template import RequestContext
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 import json
+from django.contrib.sessions.backends.signed_cookies import SessionStore 
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 ''' Custom authentication method, using custom model '''
 
@@ -38,13 +42,18 @@ kept csrf decorator for double sure '''
 
 @csrf_protect
 def user_login(request):
+	print 'i am called'
 	if request.method == 'GET':
+		if request.user.is_authenticated():
+			return redirect(settings.LOGIN_REDIRECT_URL)
 		return render(request, 'login.html')
 	elif request.method == 'POST':
 		try:
 			email_addr = request.POST.get('email')
 			password = request.POST.get('password')
-			print email_addr, password
+			next = request.POST.get('next')
+			print next
+			print request.POST
 			user = authenticate(email_addr, password)
 			if user != None:
 				user.backend = 'django.contrib.auth.backends.ModelBackend'
@@ -52,11 +61,15 @@ def user_login(request):
 					login(request, user)
 				except Exception as ex:
 					print ex
-				return render(request, 'register.html')
+				if next != '':
+					print 'next is there'
+					return redirect(next)
+				return redirect(settings.LOGIN_REDIRECT_URL)
 			else:
 				return render(request, 'login.html')
 
 		except Exception as ex:
+			print ex
 			return None
 
 ''' method to retrun message to be shown in template '''
@@ -100,3 +113,7 @@ def user_register(request):
 
 		return_message(request)
 		return render(request, 'register.html')
+
+def logout_user(request):
+	logout(request)
+	return redirect(settings.LOGIN_URL)
