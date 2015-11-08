@@ -9,3 +9,12 @@ class UserProfileAdmin(admin.ModelAdmin):
 	list_filter = ['firstname']
 
 admin.site.register(UserProfile, UserProfileAdmin)
+
+class PostAdmin(admin.ModelAdmin):
+	fields = ('poll_post', 'posted_date', 'posted_by',\
+		'slug_post')
+	#list_display = ['']
+	list_filter = ['posted_date']
+	populated_fields = {'slug': ('poll_post',)}
+
+admin.site.register(Poll_Post, PostAdmin)

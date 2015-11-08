@@ -1,4 +1,3 @@
-from poll_survey.views import *
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import (BaseUserManager,\
@@ -33,7 +32,7 @@ class UserProfileManager(BaseUserManager):
 ''' custom authentication model instead of User '''
 
 class UserProfile(AbstractBaseUser):
-	email_addr = models.EmailField(max_length=50, unique=True)
+	email_addr = models.EmailField(max_length=50, unique=True, primary_key=True)
 	username = models.TextField(max_length=50, null=True)
 	firstname = models.CharField(max_length=50, null=True)
 	lastname = models.CharField(max_length=50, null=True)
@@ -63,3 +62,20 @@ class UserProfile(AbstractBaseUser):
 
 	def has_module_perms(self, app_label):
 		return True
+
+class Poll_Post(models.Model):
+	poll_id = models.IntegerField(primary_key=True)
+	poll_post = models.TextField(null=False)
+	posted_date = models.DateTimeField(auto_now=True)
+	posted_by = models.ForeignKey(UserProfile)
+	slug_post = models.SlugField(max_length=100, unique=True)
+
+	class META:
+		ordering = ['posted_date']
+
+class Comments(models.Model):
+	comment_id = models.IntegerField(primary_key=True)
+	comment = models.TextField(null=False)
+	commented_by = models.ForeignKey(UserProfile)
+	post_id = models.ForeignKey(Poll_Post)
+	commented_date = models.DateTimeField(auto_now=True)

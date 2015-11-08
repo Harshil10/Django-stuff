@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+from django.conf import global_settings
+
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    "django.core.context_processors.request",
+) 
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -31,7 +37,7 @@ AUTH_USER_MODEL = 'poll_survey.UserProfile'
 ## redirections settings
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = 'user/profile/'
+LOGIN_REDIRECT_URL = '/user/posts/'
 
 
 
@@ -75,9 +81,9 @@ DATABASES = {
         'PORT': '',
     }
 }
-AUTHENTICATION_BACKENDS = (
-    ('django.contrib.auth.backends.ModelBackend'),
-)
+
+
+#SESSION_ENGINE = ('django.contrib.sessions.backends.signed_cookies')
 
 
 # Internationalization
