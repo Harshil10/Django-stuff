@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='container'>
+<div class="jumbotron">
+	<h2>Trending Now</h2>      
+    <p>This is an app about what's trending in the Universe at this point</p>
+</div>
+{% for poll in polls %}
+      <ul class='list-group'>
+      	<li class='list-group=item'>
+        	<a href="/posts/{{ poll.slug }}"> {{ poll.poll }} <span class="badge">5</span></a>
+        </li>
+       </ul>
+{% endfor %}
+</div>
+{% endblock %}

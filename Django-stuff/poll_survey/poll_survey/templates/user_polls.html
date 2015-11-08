@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<p> Welcome <i>{{ user.email_addr }} </i>! </p>
+{% endif %}
+
+<form name='post_poll_form' method='post' action='/user/posts/'> {% csrf_token %}
+<u><p> What do you think : </p> </u>
+	<textarea rows="4" cols="100" name='post_poll_area'> </textarea>
+<br><br>
+<Button> Post it </Button>
+<ul>
+{% for poll in polls %}
+<li><a href=/posts/{{ poll.slug_post }}/ target="_top"> {{ poll.poll_post }} </a> </li>
+<br>
+{% endfor %}
+</ul>
+
+</form>
+
+{% endblock %}

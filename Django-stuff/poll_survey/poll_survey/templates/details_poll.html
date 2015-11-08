@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<u><h3><b>Poll Post:</u></b> {{ poll_post }}</h3>
+<form name="comment_form" method="post" action="/posts/{{ slug }}/comment/"> {% csrf_token %}
+	<textarea rows='4' cols='80' name='comment_area'> </textarea>
+	<br>
+	<Button> Comment it </Button>
+</form>
+<p> Comments: </p>
+{% for comment in comments %}
+<div class="dialogbox">
+    <div class="body">
+      <span class="tip tip-left"></span>
+      <div class="message">
+		{{ comment.comment }} by <i><u>{{ comment.commented_by }}</u> at {{ comment.commented_date }} </i>
+      </div>
+    </div>
+  </div>
+
+{% endfor %}
+{% endblock %}
+
+
